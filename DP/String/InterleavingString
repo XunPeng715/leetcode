@@ -1,0 +1,32 @@
+class Solution {
+    public boolean isInterleave(String s1, String s2, String s3) {
+        if (s1.length() + s2.length() != s3.length()) {
+            return false;
+        }
+        int[][] memo = new int[s1.length()][s2.length()];
+        for (int i = 0; i < s1.length(); i++) Arrays.fill(memo[i], -1);
+        return (dfs(s1, s1.length() - 1, s2, s2.length() - 1, s3, memo) == 1) ? true: false;
+    }
+    
+    public int dfs(String s1, int i, String s2, int j, String s3, int[][] memo) {
+        if (i == -1) {
+            return s2.substring(0, j + 1).equals(s3.substring(0, j + 1)) ? 1 : 0;
+        }
+        if (j == -1) {
+            return s1.substring(0, i + 1).equals(s3.substring(0, i + 1)) ? 1 : 0;
+        }
+        if (memo[i][j] != -1) {
+            return memo[i][j];
+        }
+        int res = 0;
+        if (s1.charAt(i) == s3.charAt(i + j + 1) && s2.charAt(j) == s3.charAt(i + j + 1)) {
+            res = dfs(s1, i - 1, s2, j, s3, memo) | dfs(s1, i, s2, j - 1, s3, memo);
+        } else if (s1.charAt(i) == s3.charAt(i + j + 1)) {
+            res = dfs(s1, i - 1, s2, j, s3, memo);
+        } else if (s2.charAt(j) == s3.charAt(i + j + 1)) {
+            res = dfs(s1, i, s2, j - 1, s3, memo);
+        }
+        memo[i][j] = res;
+        return res;
+    }
+}

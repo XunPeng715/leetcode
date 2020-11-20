@@ -1,0 +1,27 @@
+class Solution {
+    public int minDistance(String word1, String word2) {
+        int[][] memo = new int[word1.length()][word2.length()];
+        return dfs(word1, word1.length() - 1, word2, word2.length() - 1, memo);
+    }
+    
+    public int dfs(String word1, int i, String word2, int j, int[][] memo) {
+        if (i == -1) {
+            return j + 1;
+        }
+        if (j == -1) {
+            return i + 1;
+        }
+        if (memo[i][j] != 0) {
+            return memo[i][j];
+        }
+        int res = Integer.MAX_VALUE;
+        if (word1.charAt(i) == word2.charAt(j)) {
+            res = Math.min(dfs(word1, i - 1, word2, j - 1, memo), res);
+        } else {
+            res = Math.min(res, Math.min(dfs(word1, i - 1, word2, j - 1, memo), 
+                                         Math.min(dfs(word1, i - 1, word2, j, memo), dfs(word1, i, word2, j - 1, memo))) + 1);
+        }
+        memo[i][j] = res;
+        return res;
+    }
+}
